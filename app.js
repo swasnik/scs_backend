@@ -30,7 +30,15 @@ app.get('/location', function(req, res){
         console.log(" project name = " + projectName);
         console.log(" keyword = " + keyword);
         try{
-            dbProvider.findData(projectName, keyword);
+             dbProvider.findData(projectName, keyword, function (results) {
+                console.log(results.length);
+                 res.send({
+                     "status":"success",
+                     "data":results
+                 }) ;
+            });
+
+            // console.log(result);
                 // .then(
                 //     function() {
                 //         // Successfully connected to the database
@@ -56,7 +64,7 @@ app.get('/location', function(req, res){
                 //         dbProvider.close();
                 //     });
 
-            res.send({ status: "success"}) ;
+            // res.send({ data: result}) ;
         }
         catch(err){
             console.log(err);

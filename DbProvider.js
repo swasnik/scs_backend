@@ -23,9 +23,9 @@ DbProvider = function(host, port) {
 };
 
 
-DbProvider.prototype.findData = function(projectName, keyword){
+DbProvider.prototype.findData = function(projectName, keyword, callback){
     var _this = this;
-
+    // var results = null;
 
     MongoClient.connect(this.url, function (err, client) {
         if (err) {
@@ -40,9 +40,7 @@ DbProvider.prototype.findData = function(projectName, keyword){
         //get db
        // _this.scsDB = client.db(scsDBName);
 
-       // _this.scsDB.collection(projectName).find({
-       //     $text: {$search: keyword }
-       // }).toArray(function(err, result) {
+       // _this.scsDB.collection(projectName).find({$text: {$search: keyword }}).toArray(function(err, result) {
          //   if (err) {
            //     console.log("Error connecting collection: " + err.message);
                 // Indicate to the caller that the request failed and pass back
@@ -59,26 +57,34 @@ DbProvider.prototype.findData = function(projectName, keyword){
 
         _this.smartDB = client.db(smartDBName);
 
-        _this.smartDB.collection(projectName).findOne({}, function (err1, result) {
-            if (err1) {
+        return _this.smartDB.collection(projectName).find({}).toArray(function(err, result) {
+            if (err) {
                 console.log("Error connecting collection: " + err1.message);
                 // Indicate to the caller that the request failed and pass back
                 // the error that was returned from "connect"
 
                 // reject(err.message);
-                throw err1;
+                throw err;
             }
-            console.log(" result == " + JSON.stringify(result) );
+
+
+// console.log(" result == " + JSON.stringify(result));
 
             client.close();
+            callback(result);
+            // results = result;
+            // return results
+
+
+
 
 
         });
-        return { status: "Success"};
+        // return { status: "Success"};
 
     });
 
-
+    // return dbcall;
 
 
 };
